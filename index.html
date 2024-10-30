@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="ADAM: An Embodied Causal Agent in Open-World Environments">
+  <meta name="keywords" content="Embodied agent, Causality, LLM">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ADAM: An Embodied Causal Agent in Open-World Environments</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title"><span class="dnerf">Adam</span>: An Embodied Causal Agent in Open-World Environments</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?hl=zh-CN&user=yWAvO4sAAAAJ">Shu Yu</a><sup>1, 2</sup>,</span>
+            <span class="author-block">
+              <a href="https://causallu.com/">Chaochao Lu</a><sup>2,†</sup></span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Fudan University</span>
+            <span class="author-block"><sup>2</sup>Shanghai Artificial Intelligence Laboratory</span>
+            <span class="eql-cntrb"><small><br><sup>†</sup>Corresponding author.</small></span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2410.22194"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <!-- TODO: complete the website-->
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/OpenCausaLab/ADAM"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <!-- TODO: complete the website-->
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+    <div class="container is-max-widescreen">
+        <div class="rows">
+            <div class="rows is-centered">
+                <div class="row is-full-width">
+                    <div style="text-align: center;">
+                        <img src="static/images/lifelong10.png" class="interpolation-image" alt=""
+                             style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+                        <br>
+                        <span style="font-size: 110%;"><b>The causal graph learned in lifelong learning.</b> <br> <span
+                                class="dnerf">Adam</span> successfully unlocks all 41 actions we implement and discovers accurate causal relationships.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-five-sixths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+            <img src="static/images/Abstract.png" class="interpolation-image" alt=""
+                             style="display: block; margin-left: auto; margin-right: auto; width: 120%;">
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+  </div>
+</section>
+
+<div class="columns is-centered">
+  <!-- Row 1 -->
+  <div class="column is-one-third">
+    <div class="content">
+      <h2 class="title is-3">mineDiamondOre</h2>
+      <p></p>
+      <video id="video1" autoplay controls muted loop playsinline height="100%">
+        <source src="static/videos/mineDiamondOre.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+  <div class="column is-one-third">
+    <div class="content">
+      <h2 class="title is-3">gatherWoodLog</h2>
+      <p></p>
+      <video id="video2" autoplay controls muted loop playsinline height="100%">
+        <source src="static/videos/gatherWoodLog.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</div>
+
+<div class="columns is-centered">
+  <!-- Row 2 -->
+  <div class="column is-one-third">
+    <div class="content">
+      <h2 class="title is-3">gatherStone</h2>
+      <p></p>
+      <video id="video3" autoplay controls muted loop playsinline height="100%">
+        <source src="static/videos/gatherStone.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+  <div class="column is-one-third">
+    <div class="content">
+      <h2 class="title is-3">smeltRawIron</h2>
+      <p></p>
+      <video id="video4" autoplay controls muted loop playsinline height="100%">
+        <source src="static/videos/smeltRawIron.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</div>
+
+
+<section class="section">
+    <div class="container is-max-widescreen">
+        <div class="rows">
+            <div class="rows is-centered">
+                <div class="row is-full-width">
+                    <div style="text-align: center;">
+                        <img src="static/images/data_head.png" class="interpolation-image" alt=""
+                             style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+                      <img src="static/images/data_head_caption.png" class="interpolation-image" alt=""
+                             style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered">
+
+      <!-- Visual Effects. -->
+      <div class="column">
+        <div class="content">
+          <h2 class="title is-3">Automatic exploration</h2>
+          <img src="static/images/video_description.png" class="interpolation-image" alt=""
+                 style="display: block; margin-left: auto; margin-right: auto; width: 100%;">
+          <br>
+          <video id="Automatic" autoplay controls muted loop playsinline height="100%">
+            <source src="static/videos/demoV7_720p.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <!--/ Visual Effects. -->
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered">
+
+      <div class="column">
+        <div class="content">
+          <h2 class="title is-3">Components</h2>
+            <br>
+            <img src="static/images/overview.png" class="interpolation-image" alt=""
+                 style="display: block; margin-left: auto; margin-right: auto; width: 100%;">
+            <br>
+            <img src="static/images/overview_caption.png" class="interpolation-image" alt=""
+                 style="display: block; margin-left: auto; margin-right: auto; width: 100%;">
+            <br>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container" style="width: 70%; margin: 0 auto;">
+      <div id="image-carousel" class="carousel results-carousel">
+        <div class="item item-InteractionModule">
+          <a href="./static/images/combined_InteractionModule.png" data-lightbox="carousel-images" data-title="InteractionModule">
+            <img src="./static/images/combined_InteractionModule.png" alt="InteractionModule" style="height: 350px; width: auto; object-fit: contain;">
+          </a>
+        </div>
+        <div class="item item-LLM-CD-5">
+          <a href="./static/images/combined_LLM-CD-5.png" data-lightbox="carousel-images" data-title="LLM-CD-5">
+            <img src="./static/images/combined_LLM-CD-5.png" alt="LLM-CD-5" style="height: 350px; width: auto; object-fit: contain;">
+          </a>
+        </div>
+        <div class="item item-Intervention-based_CD">
+          <a href="./static/images/combined_Intervention-based_CD.png" data-lightbox="carousel-images" data-title="Intervention-based_CD">
+            <img src="./static/images/combined_Intervention-based_CD.png" alt="Intervention-based_CD" style="height: 350px; width: auto; object-fit: contain;">
+          </a>
+        </div>
+        <div class="item item-ControllerModule">
+          <a href="./static/images/combined_ControllerModule.png" data-lightbox="carousel-images" data-title="ControllerModule">
+            <img src="./static/images/combined_ControllerModule.png" alt="ControllerModule" style="height: 350px; width: auto; object-fit: contain;">
+          </a>
+        </div>
+        <div class="item item-PerceptionModule">
+          <a href="./static/images/combined_PerceptionModule.png" data-lightbox="carousel-images" data-title="PerceptionModule">
+            <img src="./static/images/combined_PerceptionModule.png" alt="PerceptionModule" style="height: 350px; width: auto; object-fit: contain;">
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 初始化轮播
+    bulmaCarousel.attach('#image-carousel', {
+      slidesToScroll: 1,
+      slidesToShow: 2,
+      infinite: true,
+      autoplay: true,      // 开启自动播放
+      autoplaySpeed: 3000, // 设置自动播放间隔为3秒（3000毫秒）
+      pauseOnHover: false, // 当鼠标悬停时，不暂停自动播放
+    });
+  });
+</script>
+
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered">
+
+      <!-- Visual Effects. -->
+      <div class="column">
+        <div class="content">
+          <h2 class="title is-3">Environmental awareness</h2>
+          <img src="static/images/env_caption.png" class="interpolation-image" alt=""
+                 style="display: block; margin-left: auto; margin-right: auto; width: 100%;">
+        </div>
+      </div>
+      <!--/ Visual Effects. -->
+    </div>
+  </div>
+</section>
+
+<div class="columns is-centered">
+  <!-- Row 1 -->
+  <div class="column is-one-third">
+    <div class="content">
+      <h2 class="title is-4">Causal graph learning</h2>
+      <p></p>
+      <video id="Env1" autoplay controls muted loop playsinline height="100%">
+        <source src="static/videos/env_obs_1.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+  <div class="column is-one-third">
+    <div class="content">
+      <h2 class="title is-4">Task executing</h2>
+      <p></p>
+      <video id="Env2" autoplay controls muted loop playsinline height="100%">
+        <source src="static/videos/env_obs_2.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered">
+
+      <div class="column">
+        <div class="content">
+          <h2 class="title is-3">Performance</h2>
+          <h2 class="title is-4">Interpretability</h2>
+          <img src="static/images/SHD_compare.png" class="interpolation-image" alt=""
+               style="display: block; margin-left: auto; margin-right: auto; width: 100%;">
+          <br>
+          <img src="static/images/SHD_caption.png" class="interpolation-image" alt=""
+               style="display: block; margin-left: auto; margin-right: auto; width: 100%;">
+          <br>
+          <h2 class="title is-4">Efficiency</h2>
+          <img src="static/images/Efficiency.png" class="interpolation-image" alt=""
+               style="display: block; margin-left: auto; margin-right: auto; width: 100%;">
+          <br>
+          <img src="static/images/Efficiency_caption.png" class="interpolation-image" alt=""
+               style="display: block; margin-left: auto; margin-right: auto; width: 100%;">
+          <h2 class="title is-4">Robustness</h2>
+          <img src="static/images/Robustness.png" class="interpolation-image" alt=""
+               style="display: block; margin-left: auto; margin-right: auto; width: 85%;">
+          <br>
+          <img src="static/images/Robustness_caption.png" class="interpolation-image" alt=""
+               style="display: block; margin-left: auto; margin-right: auto; width: 100%;">
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered">
+
+      <div class="column">
+        <div class="content">
+          <h2 class="title is-3">Conclusion</h2>
+            <br>
+            <img src="static/images/Conclusion.png" class="interpolation-image" alt=""
+                 style="display: block; margin-left: auto; margin-right: auto; width: 100%;">
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{yu2024adam,
+  title   = {ADAM: An Embodied Causal Agent in Open-World Environments},
+  author  = {Shu Yu and Chaochao Lu},
+  year    = {2024},
+  journal = {arXiv preprint arXiv:2410.22194}
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="./static/videos/nerfies_paper.pdf">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/keunhong" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            Website template borrowed from <a
+              href="https://github.com/nerfies/nerfies.github.io">NeRFies</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -15,7 +15,7 @@ def get_response(prompt='', model_name='gpt-4-turbo-preview'):
 
 
 def get_local_response(prompt='', local_llm_port=6000):
-    url = 'http://host.docker.internal:' + str(local_llm_port) + '/send'
+    url = 'http://localhost:' + str(local_llm_port) + '/send'
     data = {'text': prompt}
     response = requests.post(url, json=data)
     if response.status_code == 200:

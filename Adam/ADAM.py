@@ -4,6 +4,7 @@ import re
 import sys
 import time
 import threading
+from datetime import datetime
 
 import openai
 import Adam.util_info
@@ -63,12 +64,16 @@ class ADAM:
                     server_port=game_server_port + i,
                     request_timeout=env_request_timeout,
                 )
+
+        self.current_time_str = datetime.now().strftime("%Y%m%d%H%M%S")
         self.env_wait_ticks = env_wait_ticks
         self.max_infer_loop_num = max_infer_loop_num
         self.infer_sampling_num = infer_sampling_num
         self.tmp_image_path = tmp_image_path
-        self.dataset_path = U.f_mkdir(os.path.abspath(os.path.dirname(__file__)), "causal_datasets", llm_model_type)
+        self.dataset_path = U.f_mkdir(os.path.abspath(os.path.dirname(__file__)), "causal_datasets", llm_model_type + "_" + self.current_time_str)
         U.f_mkdir(self.dataset_path, 'causal_result')
+        U.f_mkdir(self.dataset_path, 'llm_result')
+        U.f_mkdir(self.dataset_path, 'mllm_result')
         U.f_mkdir(self.dataset_path, 'llm_steps_log')
         U.f_mkdir(self.dataset_path, 'log_data')
         self.ckpt_path = U.f_mkdir(self.dataset_path, 'ckpt', get_time())
@@ -233,8 +238,15 @@ class ADAM:
         else:
             for i in range(self.infer_sampling_num):
                 print(f'Sampling {i + 1} started')
-                while not self.sample_action_once(self.env, action):
-                    ...
+                while True:
+                    try:
+                        res = self.sample_action_once(self.env, action)
+                        if res:
+                            break
+                    except Exception as e:
+                        print(e)
+
+
 
     def causal_verification_once(self, env, options_orig, action, effect_item):
         try:
@@ -445,26 +457,35 @@ class ADAM:
         result = self.env.step('')
         self.run_visual_API()
         while True:
-            environment_description = get_image_description(local_mllm_port=self.local_mllm_port)
-            if all(item in translate_item_name_list_to_letter(result[0][1]['inventory'].keys()) for item in
-                   self.goal_item_letters):
-                subtask = 'Achieve the environmental factors.'
-            else:
-                subtask = self.planner(result[0][1]['inventory'])
-            action = self.actor(subtask, environment_description)
-            print('Action:', action)
-            result = self.env.step(skill_loader(action))
-            start_item = result[0][1]['inventory']
-            result = self.env.step('')
-            end_item = result[0][1]['inventory']
-            print('Inventory now:', str(result[0][1]['inventory']))
-            print('Voxels around:', str(result[0][1]['voxels']))
-            consumed_items, added_items = get_item_changes(start_item, end_item)
-            recorder(start_item, end_item, consumed_items, added_items, action, self.dataset_path)
-            self.update_material_dict(end_item)
-            self.update_memory(action, consumed_items, added_items, environment_description)
-            if self.check_goal_completed(result):
-                return
+            try:
+                environment_description = get_image_description(local_mllm_port=self.local_mllm_port)
+                with open(U.f_join(self.dataset_path, 'mllm_result', f'talk_{self.current_time_str}.txt'), 'a') as talk_result_file:
+                    talk_result_file.write(str(environment_description) + "\n\n")
+
+                if all(item in translate_item_name_list_to_letter(result[0][1]['inventory'].keys()) for item in
+                    self.goal_item_letters):
+                    subtask = 'Achieve the environmental factors.'
+                else:
+                    subtask = self.planner(result[0][1]['inventory'])
+                with open(U.f_join(self.dataset_path, 'llm_result', f'talk_{self.current_time_str}.txt'), 'a') as talk_result_file:
+                    talk_result_file.write(str(subtask) + "\n\n")
+
+                action = self.actor(subtask, environment_description)
+                print('Action:', action)
+                result = self.env.step(skill_loader(action))
+                start_item = result[0][1]['inventory']
+                result = self.env.step('')
+                end_item = result[0][1]['inventory']
+                print('Inventory now:', str(result[0][1]['inventory']))
+                print('Voxels around:', str(result[0][1]['voxels']))
+                consumed_items, added_items = get_item_changes(start_item, end_item)
+                recorder(start_item, end_item, consumed_items, added_items, action, self.dataset_path)
+                self.update_material_dict(end_item)
+                self.update_memory(action, consumed_items, added_items, environment_description)
+                if self.check_goal_completed(result):
+                    return
+            except Exception as e:
+                print(e)
 
     def check_goal_completed(self, result):
         return all(item in translate_item_name_list_to_letter(result[0][1]['inventory'].keys()) for item in
@@ -490,16 +511,21 @@ class ADAM:
             self.learn_new_actions()
 
     def run_visual_API(self):
-        python_executable = sys.executable
-        script_path = os.path.join(os.getcwd(), 'Adam', "visual_API.py")
-        commands = [python_executable, script_path]
-        monitor = SubprocessMonitor(
-            commands=commands,
-            name="VisualAPIMonitor",
-            ready_match=r"Visual API Ready",
-            log_path="logs",
-            callback_match=r"Error",
-            callback=lambda: print("Error detected in subprocess!"),
-            finished_callback=lambda: print("Subprocess has finished.")
-        )
-        monitor.run()
+        # python_executable = sys.executable
+        # script_path = os.path.join(os.getcwd(), 'Adam', "visual_API.py")
+        
+        # commands = [python_executable, script_path]  # xvfb-run 추가
+
+        # monitor = SubprocessMonitor(
+        #     commands=commands,
+        #     name="VisualAPIMonitor",
+        #     ready_match=r"Visual API Ready",
+        #     log_path="logs",
+        #     callback_match=r"Error",
+        #     callback=lambda: print("Error detected in subprocess!"),
+        #     finished_callback=lambda: print("Subprocess has finished.")
+        # )
+        # monitor.run()
+
+        pass
+

@@ -43,6 +43,7 @@ class ADAM:
             load_ckpt_path: str = '',
             auto_load_ckpt: bool = False,
             parallel: bool = False,
+            goal = []
     ):
         self.env = VoyagerEnv(
             mc_port=mc_port,
@@ -76,6 +77,7 @@ class ADAM:
         U.f_mkdir(self.dataset_path, 'mllm_result')
         U.f_mkdir(self.dataset_path, 'llm_steps_log')
         U.f_mkdir(self.dataset_path, 'log_data')
+        U.f_mkdir(self.dataset_path, 'goal')
         self.ckpt_path = U.f_mkdir(self.dataset_path, 'ckpt', get_time())
         with open(prompt_folder_path + '/LLM_CD_prompt.txt', 'r') as prompt_file:
             self.CD_prompt = prompt_file.read()
@@ -83,6 +85,8 @@ class ADAM:
             self.planner_prompt = prompt_file.read()
         with open(prompt_folder_path + '/actor_prompt.txt', 'r') as prompt_file:
             self.actor_prompt = prompt_file.read()
+        with open(U.f_join(self.dataset_path, 'goal', f'goal.txt'), 'a') as goal_file:
+            goal_file.write(str(goal) + "\n\n")
         self.max_try = max_try
         self.max_llm_answer_num = max_llm_answer_num
         self.llm_model_type = llm_model_type

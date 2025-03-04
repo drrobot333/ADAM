@@ -16,16 +16,26 @@ class VisualAPI:
         self.driver.set_window_size(1920, 1080)
 
     def run(self):
-        self.driver.get("http://localhost:9000")
+        while True:
+            try:
+                self.driver.get("http://localhost:9000")
+                break
+            except Exception as e:
+                print(e)
+                time.sleep(10)
         IMAGE_DIR = 'Adam/game_image'
         U.f_mkdir(IMAGE_DIR)
         if not os.path.exists(IMAGE_DIR):
             os.makedirs(IMAGE_DIR)
         print('Visual API Ready')
         while True:
-            screenshot_path = os.path.join(IMAGE_DIR, 'tmp.png')
-            self.driver.save_screenshot(screenshot_path)
-            time.sleep(10)
+            try:
+                screenshot_path = os.path.join(IMAGE_DIR, 'tmp.png')
+                self.driver.save_screenshot(screenshot_path)
+                time.sleep(10)
+            except Exception as e:
+                print(e)
+                time.sleep(10)
 
     def stop(self):
         self.driver.quit()
@@ -33,5 +43,3 @@ class VisualAPI:
 
 module = VisualAPI()
 module.run()
-
-

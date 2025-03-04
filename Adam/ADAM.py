@@ -190,7 +190,7 @@ class ADAM:
 
     def save_wandb_state(self, filepath):
         # Artifact 생성
-        artifact = wandb.Artifact(name=",".join(self.goal[0]) + "_" + self.current_time_str, type="json_data")
+        artifact = wandb.Artifact(name="-".join(self.goal[0]) + "_" + self.current_time_str, type="json_data")
 
         # JSON 파일 추가
         artifact.add_file(filepath)

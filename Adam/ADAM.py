@@ -17,6 +17,8 @@ from Adam.module_utils import *
 from Adam.infer_API import get_response, get_local_response
 from Adam.MLLM_API import get_image_description
 
+import wandb
+
 lock = threading.Lock()
 
 
@@ -108,6 +110,8 @@ class ADAM:
             self.auto_load_state()
         openai.api_key = openai_api_key
 
+        wandb.init(config={"items":",".join(goal[0]), "environment":",".join(goal[1])})
+
     def get_llm_answer(self, prompt):
         if self.use_local_llm_service:
             response_text = get_local_response(prompt, self.local_llm_port)
@@ -181,6 +185,8 @@ class ADAM:
         filepath = U.f_join(self.ckpt_path, get_time() + '.json')
         with open(filepath, 'w') as f:
             json.dump(state, f, indent=4)
+
+        wandb.log(state)
 
     def load_state(self, filepath):
         with open(filepath, 'r') as f:

@@ -186,7 +186,17 @@ class ADAM:
         with open(filepath, 'w') as f:
             json.dump(state, f, indent=4)
 
-        wandb.log(state)
+        self.save_wandb_state(filepath)
+
+    def save_wandb_state(self, filepath):
+        # Artifact 생성
+        artifact = wandb.Artifact(name="checkpoint", type="json_data")
+
+        # JSON 파일 추가
+        artifact.add_file(filepath)
+
+        # Artifact를 W&B에 로깅
+        wandb.log_artifact(artifact)
 
     def load_state(self, filepath):
         with open(filepath, 'r') as f:

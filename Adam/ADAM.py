@@ -535,7 +535,13 @@ class ADAM:
                 break
             self.learn_new_actions()
 
-        self.controller()
+        while True:
+            try:
+                self.controller()
+                break
+            except Exception as e:
+                print(e)
+                time.sleep(10)
         while len(self.learned_causal_subgraph.keys()) < len(self.unlocked_actions):
             self.learn_new_actions()
 

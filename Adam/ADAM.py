@@ -493,7 +493,7 @@ class ADAM:
                     print(self.step_num)
                     wandb.log({"step_num":self.step_num})
                     subtask = 'Achieve the environmental factors.'
-                    break
+                    exit()
                 else:
                     subtask = self.planner(result[0][1]['inventory'])
                 with open(U.f_join(self.dataset_path, 'llm_result', f'talk_{",".join(self.goal[0])}_{self.current_time_str}.txt'), 'a') as talk_result_file:

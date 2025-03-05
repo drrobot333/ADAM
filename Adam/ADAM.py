@@ -73,7 +73,9 @@ class ADAM:
         self.max_infer_loop_num = max_infer_loop_num
         self.infer_sampling_num = infer_sampling_num
         self.tmp_image_path = tmp_image_path
-        self.dataset_path = U.f_mkdir(os.path.abspath(os.path.dirname(__file__)), "causal_datasets", llm_model_type + "_" + self.current_time_str)
+        self.dataset_path = U.f_mkdir(os.path.abspath(os.path.dirname(__file__)), "causal_datasets", llm_model_type)
+        self.container_name = os.environ.get('CONTAINER_NAME')
+        self.step_num = 0
         U.f_mkdir(self.dataset_path, 'causal_result')
         U.f_mkdir(self.dataset_path, 'llm_result')
         U.f_mkdir(self.dataset_path, 'mllm_result')
@@ -110,8 +112,12 @@ class ADAM:
             self.auto_load_state()
         openai.api_key = openai_api_key
 
-        wandb.init(config={"items":",".join(goal[0]), "environment":",".join(goal[1])})
-
+        wandb.init(config={
+            "items":",".join(goal[0]), 
+            "environment":",".join(goal[1]),
+            "container":self.container_name,
+            "time":self.current_time_str
+            })
     def get_llm_answer(self, prompt):
         if self.use_local_llm_service:
             response_text = get_local_response(prompt, self.local_llm_port)
@@ -479,18 +485,21 @@ class ADAM:
         while True:
             try:
                 environment_description = get_image_description(local_mllm_port=self.local_mllm_port)
-                with open(U.f_join(self.dataset_path, 'mllm_result', f'talk_{self.current_time_str}.txt'), 'a') as talk_result_file:
+                with open(U.f_join(self.dataset_path, 'mllm_result', f'talk_{",".join(self.goal[0])}_{self.current_time_str}.txt'), 'a') as talk_result_file:
                     talk_result_file.write(str(environment_description) + "\n\n")
 
                 if all(item in translate_item_name_list_to_letter(result[0][1]['inventory'].keys()) for item in
                     self.goal_item_letters):
+                    print(self.step_num)
+                    wandb.log({"step_num":self.step_num})
                     subtask = 'Achieve the environmental factors.'
+                    break
                 else:
                     subtask = self.planner(result[0][1]['inventory'])
-                with open(U.f_join(self.dataset_path, 'llm_result', f'talk_{self.current_time_str}.txt'), 'a') as talk_result_file:
+                with open(U.f_join(self.dataset_path, 'llm_result', f'talk_{",".join(self.goal[0])}_{self.current_time_str}.txt'), 'a') as talk_result_file:
                     talk_result_file.write(str(subtask) + "\n\n")
-
                 action = self.actor(subtask, environment_description)
+                self.step_num += 1
                 print('Action:', action)
                 result = self.env.step(skill_loader(action))
                 start_item = result[0][1]['inventory']
